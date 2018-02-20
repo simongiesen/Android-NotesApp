@@ -5,7 +5,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
@@ -26,32 +28,42 @@ public class NoteActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
     TextInputEditText text;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
+        preferences = PreferenceManager.getDefaultSharedPreferences(NoteActivity.this);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Add Note");
         SS.setSpan (new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         getSupportActionBar().setTitle(SS);
-        Intent intent = new Intent(this, NoteActivity.class);
-        intent.putExtra("IS_FROM_NOTIFICATION",true);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
-        Notification.Builder builder = new Notification.Builder(getApplicationContext());
-        builder.setContentTitle("Tap to add a note!");
-        builder.setContentText("Note something productive today!");
-        builder.setContentIntent(pendingIntent);
-        builder.setTicker("Add Notes");
-        builder.setOngoing(true);
-        builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.notification_white);
-        builder.setPriority(Notification.PRIORITY_MAX);
-        Notification notification = builder.build();
-        NotificationManager notificationManger = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManger != null) {
-            notificationManger.notify(1, notification);
+        boolean b = preferences.getBoolean("shortcut", true);
+        if (b) {
+            Intent intent = new Intent(this, NoteActivity.class);
+            intent.putExtra("IS_FROM_NOTIFICATION", true);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
+            Notification.Builder builder = new Notification.Builder(getApplicationContext());
+            builder.setContentTitle("Tap to add a note!");
+            builder.setContentText("Note something productive today!");
+            builder.setContentIntent(pendingIntent);
+            builder.setTicker("Add Notes");
+            builder.setOngoing(true);
+            builder.setAutoCancel(true);
+            builder.setSmallIcon(R.drawable.notification_white);
+            builder.setPriority(Notification.PRIORITY_MAX);
+            Notification notification = builder.build();
+            NotificationManager notificationManger = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManger != null) {
+                notificationManger.notify(1, notification);
+            }
+        } else{
+            NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (nMgr != null) {
+                nMgr.cancelAll();
+            }
         }
         fab = findViewById(R.id.add_fab);
         text = findViewById(R.id.add_text);
@@ -79,7 +91,9 @@ public class NoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        startActivity( new Intent(this, MainActivity.class) );
+        Intent i = new Intent(NoteActivity.this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
         finish();
     }
 

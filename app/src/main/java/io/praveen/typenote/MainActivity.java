@@ -4,17 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -46,12 +48,13 @@ public class MainActivity extends AppCompatActivity{
     ImageView edit, share;
     NoteAdapter mAdapter;
     View v;
-    private SearchView searchView;
+    SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Type Note");
@@ -63,7 +66,9 @@ public class MainActivity extends AppCompatActivity{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, NoteActivity.class));
+                Intent i = new Intent(MainActivity.this, NoteActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
                 finish();
             }
         });
@@ -81,22 +86,30 @@ public class MainActivity extends AppCompatActivity{
         if (c){
             Snackbar.make(sv, "Note edited successfully!", Snackbar.LENGTH_SHORT).show();
         }
-        Intent intent = new Intent(this, NoteActivity.class);
-        intent.putExtra("IS_FROM_NOTIFICATION",true);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
-        Notification.Builder builder = new Notification.Builder(getApplicationContext());
-        builder.setContentTitle("Tap to add a note");
-        builder.setContentIntent(pendingIntent);
-        builder.setTicker("Add Notes");
-        builder.setOngoing(true);
-        builder.setContentText("Note something productive today!");
-        builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.notification_white);
-        builder.setPriority(Notification.PRIORITY_MAX);
-        Notification notification = builder.build();
-        NotificationManager notificationManger = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManger != null) {
-            notificationManger.notify(1, notification);
+        boolean shortcut = preferences.getBoolean("shortcut", true);
+        if (shortcut) {
+            Intent intent = new Intent(this, NoteActivity.class);
+            intent.putExtra("IS_FROM_NOTIFICATION", true);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
+            Notification.Builder builder = new Notification.Builder(getApplicationContext());
+            builder.setContentTitle("Tap to add a note!");
+            builder.setContentText("Note something productive today!");
+            builder.setContentIntent(pendingIntent);
+            builder.setTicker("Add Notes");
+            builder.setOngoing(true);
+            builder.setAutoCancel(true);
+            builder.setSmallIcon(R.drawable.notification_white);
+            builder.setPriority(Notification.PRIORITY_MAX);
+            Notification notification = builder.build();
+            NotificationManager notificationManger = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManger != null) {
+                notificationManger.notify(1, notification);
+            }
+        } else{
+            NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (nMgr != null) {
+                nMgr.cancelAll();
+            }
         }
     }
 
@@ -140,6 +153,7 @@ public class MainActivity extends AppCompatActivity{
                         Intent intent = new Intent(MainActivity.this, EditActivity.class);
                         intent.putExtra("note", note.getNote());
                         intent.putExtra("id", note.getID());
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
                     }
@@ -189,6 +203,51 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem search = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        search(searchView);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.settings){
+            Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }
+        return true;
+    }
+
+    private void search(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) { return false; }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                mAdapter.getFilter().filter("");
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mAdapter.getFilter().filter("");
+                return true;
+            }
+        });
     }
 
 }

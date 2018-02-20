@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="notification"
+        android:title="Turn Off Quick Add Shortcut" />
+
+</PreferenceScreen>

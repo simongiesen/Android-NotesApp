@@ -1,16 +1,11 @@
 package io.praveen.typenote.SQLite;
 
-import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,6 +16,7 @@ import io.praveen.typenote.R;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> implements Filterable {
 
     private List<Note> notes;
+    private List<Note> fullNote;
     private List<Note> filtered;
 
     @Override
@@ -29,19 +25,21 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String charString = charSequence.toString();
-                if (charString.isEmpty()) {
-                    filtered = notes;
+                if (charString.length() == 0) {
+                    ArrayList<Note> filteredList = new ArrayList<>();
+                    for (Note i : fullNote) {
+                        filteredList.add(i);
+                    }
+                    notes = filteredList;
                 } else {
-                    List<Note> filteredList = new ArrayList<>();
-                    for (Note row : notes) {
-                        if (row.getNote().toLowerCase().contains(charString.toLowerCase())) {
-                            filteredList.add(row);
+                    ArrayList<Note> filteredList = new ArrayList<>();
+                    for (Note i : fullNote) {
+                        if (i.getNote().toLowerCase().contains(charString)) {
+                            filteredList.add(i);
                         }
                     }
-
-                    filtered = filteredList;
+                    notes = filteredList;
                 }
-
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filtered;
                 return filterResults;
@@ -55,6 +53,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         };
     }
 
+
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView text, date;
         MyViewHolder(View view) {
@@ -66,6 +66,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
 
     public NoteAdapter(List<Note> notes) {
         this.notes = notes;
+        fullNote = notes;
     }
 
     @Override
