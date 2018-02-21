@@ -78,6 +78,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Note note = notes.get(position);
+        holder.setIsRecyclable(false);
         holder.text.setText(note.getNote());
         holder.date.setText(note.getDate());
     }

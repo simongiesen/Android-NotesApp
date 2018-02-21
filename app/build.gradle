@@ -6,8 +6,8 @@ android {
         applicationId "io.praveen.typenote"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 7
-        versionName "8.0 RC"
+        versionCode 8
+        versionName "8.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
