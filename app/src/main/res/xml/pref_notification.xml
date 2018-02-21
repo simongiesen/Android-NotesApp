@@ -3,6 +3,6 @@
     <SwitchPreference
         android:defaultValue="false"
         android:key="notification"
-        android:title="Turn Off Quick Add Shortcut" />
+        android:title="Quick Add Shortcut" />
 
 </PreferenceScreen>

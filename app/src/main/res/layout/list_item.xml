@@ -28,6 +28,7 @@
                 android:id="@+id/text_note"
                 android:animateLayoutChanges="true"
                 android:textSize="18sp"
+                android:maxLines="2"
                 android:textColor="@color/colorPrimaryText"
                 android:layout_height="wrap_content" />
 

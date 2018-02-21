@@ -21,7 +21,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SettingsActivity extends AppCompatPreferenceActivity{
 
-    static boolean b = true;
+    static boolean b = true, c = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,18 +49,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
     public void onBackPressed() {
         super.onBackPressed();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-        if (b){
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("shortcut", true);
-            editor.apply();
-
-        } else{
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("shortcut", false);
-            editor.apply();
-            NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (nMgr != null) {
-                nMgr.cancelAll();
+        if (c){
+            if (b){
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("shortcut", true);
+                editor.apply();
+            } else{
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putBoolean("shortcut", false);
+                editor.apply();
+                NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (nMgr != null) {
+                    nMgr.cancelAll();
+                }
             }
         }
         Intent i = new Intent(SettingsActivity.this, MainActivity.class);
@@ -80,6 +81,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
             if (preference instanceof SwitchPreference) {
                 if (preference.getKey().equals("notification")) {
                     b = ((SwitchPreference) preference).isChecked();
+                    c = true;
                 }
             }
             return true;
