@@ -52,10 +52,7 @@ public class MainActivity extends AppCompatActivity{
 
     FloatingActionButton fab;
     CoordinatorLayout sv;
-    ImageView edit, share;
     NoteAdapter mAdapter;
-    View v;
-    TextView text;
     SharedPreferences preferences;
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -68,7 +65,9 @@ public class MainActivity extends AppCompatActivity{
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Type Note");
         SS.setSpan (new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        getSupportActionBar().setTitle(SS);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(SS);
+        }
         fab = findViewById(R.id.fab);
         sv = findViewById(R.id.fabView);
         populateData();
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity{
                 Intent intent = new Intent(this, NoteActivity.class);
                 intent.putExtra("IS_FROM_NOTIFICATION", true);
                 @SuppressLint("WrongConstant") PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, NotificationManager.IMPORTANCE_LOW);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
                 builder.setContentTitle("Tap to add a note!");
                 builder.setContentText("Note something productive today!");
                 builder.setContentIntent(pendingIntent);
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity{
                 builder.setOngoing(true);
                 builder.setAutoCancel(true);
                 builder.setSmallIcon(R.drawable.notification_white);
-                builder.setPriority(Notification.PRIORITY_MAX);
+                builder.setPriority(NotificationManager.IMPORTANCE_LOW);
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
                 stackBuilder.addNextIntent(intent);
                 PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -178,43 +177,12 @@ public class MainActivity extends AppCompatActivity{
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
-                if (v != view){
-                    if (edit != null) {
-                        edit.setVisibility(View.GONE);
-                        share.setVisibility(View.GONE);
-                        text.setMaxLines(2);
-                    }
-                }
-                v = view;
-                edit = view.findViewById(R.id.list_edit);
-                share = view.findViewById(R.id.list_share);
-                text = view.findViewById(R.id.text_note);
-                text.setMaxLines(100);
-                edit.setVisibility(View.VISIBLE);
-                edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                        intent.putExtra("note", note.getNote());
-                        intent.putExtra("id", note.getID());
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-                share.setVisibility(View.VISIBLE);
-                share.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String text = note.getNote();
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
-                        sendIntent.setType("text/plain");
-                        startActivity(sendIntent);
-                    }
-                });
-                Snackbar.make(sv, "Note copied!", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, ViewActivity.class);
+                intent.putExtra("note", note.getNote());
+                intent.putExtra("id", note.getID());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             }
             @SuppressLint("SetTextI18n")
             @Override
@@ -252,8 +220,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem search = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         search(searchView);
         return true;
     }

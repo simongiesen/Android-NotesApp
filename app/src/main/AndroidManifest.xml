@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="">
         <activity
             android:name=".MainActivity"
             android:noHistory="true"
@@ -19,7 +20,9 @@
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -37,12 +40,11 @@
             android:name=".EditActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" />
+        <activity android:name=".SettingsActivity" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".LicensesActivity" />
-        <activity android:name=".ContributorsActivity"></activity>
+        <activity android:name=".ContributorsActivity" />
+        <activity android:name=".ViewActivity" />
     </application>
 
 </manifest>

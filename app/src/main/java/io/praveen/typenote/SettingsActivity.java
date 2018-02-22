@@ -1,9 +1,7 @@
 package io.praveen.typenote;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,12 +20,12 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SettingsActivity extends AppCompatPreferenceActivity{
 
-    static boolean b = true, c = false;
+    static boolean b;
+    static SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Settings");
@@ -35,6 +33,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
         getSupportActionBar().setTitle(SS);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
+        preferences = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
     }
 
     public static class MainPreferenceFragment extends PreferenceFragment {
@@ -59,22 +58,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
-        if (c){
-            if (b){
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("shortcut", true);
-                editor.apply();
-            } else{
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putBoolean("shortcut", false);
-                editor.apply();
-                NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if (nMgr != null) {
-                    nMgr.cancelAll();
-                }
-            }
-        }
+
         Intent i = new Intent(SettingsActivity.this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
@@ -82,17 +66,26 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
     }
 
     private static void bindPreferenceSummaryToValue(Preference preference) {
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getBoolean(preference.getKey(), true));
+        preference.setOnPreferenceClickListener(sBindPreferenceSummaryToValueListener);
+        sBindPreferenceSummaryToValueListener.onPreferenceClick(preference);
     }
 
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+    private static Preference.OnPreferenceClickListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceClickListener() {
+        @SuppressLint("ApplySharedPref")
         @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        public boolean onPreferenceClick(Preference preference) {
             if (preference instanceof SwitchPreference) {
                 if (preference.getKey().equals("notification")) {
                     b = ((SwitchPreference) preference).isChecked();
-                    c = true;
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.remove("shortcut");
+                    editor.apply();
+                    if (b) {
+                        editor.putBoolean("shortcut", false);
+                    } else{
+                        editor.putBoolean("shortcut", true);
+                    }
+                    editor.apply();
                 }
             }
             return true;

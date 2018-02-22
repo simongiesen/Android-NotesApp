@@ -17,6 +17,7 @@ import android.view.View;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import io.praveen.typenote.SQLite.DatabaseHandler;
 import io.praveen.typenote.SQLite.Note;
@@ -36,26 +37,14 @@ public class EditActivity extends AppCompatActivity {
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Edit Note");
         SS.setSpan (new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        getSupportActionBar().setTitle(SS);
-        Intent intent = new Intent(this, EditActivity.class);
-        intent.putExtra("IS_FROM_NOTIFICATION",true);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
-        Notification.Builder builder = new Notification.Builder(getApplicationContext());
-        builder.setContentTitle("Tap to add a note!");
-        builder.setContentText("Note something productive today!");
-        builder.setContentIntent(pendingIntent);
-        builder.setTicker("Add Notes");
-        builder.setOngoing(true);
-        builder.setAutoCancel(true);
-        builder.setSmallIcon(R.drawable.notification_white);
-        builder.setPriority(Notification.PRIORITY_MAX);
-        Notification notification = builder.build();
-        NotificationManager notificationManger = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManger != null) {
-            notificationManger.notify(1, notification);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(SS);
         }
-        String noteText = getIntent().getExtras().getString("note");
-        final int id = getIntent().getExtras().getInt("id");
+        String noteText = "";
+
+        if (getIntent().getExtras() != null) {
+            noteText = getIntent().getExtras().getString("note");
+        }
         fab = findViewById(R.id.add_fab);
         text = findViewById(R.id.add_text);
         text.setText(noteText);
@@ -65,8 +54,12 @@ public class EditActivity extends AppCompatActivity {
                 String note = text.getText().toString();
                 if (note.length() > 0){
                     Calendar c = Calendar.getInstance();
-                    SimpleDateFormat df = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+                    SimpleDateFormat df = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.ENGLISH);
                     String formattedDate = df.format(c.getTime());
+                    int id = 0;
+                    if (getIntent().getExtras() != null) {
+                        id = getIntent().getExtras().getInt("id");
+                    }
                     DatabaseHandler db = new DatabaseHandler(EditActivity.this);
                     db.updateNote(new Note(id, note, formattedDate));
                     Intent intent = new Intent(EditActivity.this, MainActivity.class);
