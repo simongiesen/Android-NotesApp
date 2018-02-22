@@ -74,7 +74,6 @@ public class AboutActivity extends AppCompatActivity implements BillingProcessor
                     finish();
                 } else if (position == 2){
                     bp.purchase(AboutActivity.this, "typenote_donate");
-                    bp.consumePurchase("typenote_donate");
                 } else if (position == 3){
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=io.praveen.typenote")));
                 }
@@ -118,6 +117,7 @@ public class AboutActivity extends AppCompatActivity implements BillingProcessor
             @Override
             public void onClick(View v) {}
         }).show();
+        bp.consumePurchase("typenote_donate");
     }
 
     @Override
