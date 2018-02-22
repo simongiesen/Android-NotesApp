@@ -104,11 +104,12 @@ public class MainActivity extends AppCompatActivity{
                 String channelName = "Type Note Shortcuts";
                 @SuppressLint("WrongConstant") NotificationChannel mChannel = new NotificationChannel(channelId, channelName, 3);
                 if (notificationManager != null) {
+                    mChannel.setSound(null, null);
                     notificationManager.createNotificationChannel(mChannel);
                 }
                 Intent intent = new Intent(this, NoteActivity.class);
                 intent.putExtra("IS_FROM_NOTIFICATION", true);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
+                @SuppressLint("WrongConstant") PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, NotificationManager.IMPORTANCE_LOW);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
                 builder.setContentTitle("Tap to add a note!");
                 builder.setContentText("Note something productive today!");
