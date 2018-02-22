@@ -6,12 +6,12 @@
     tools:context="io.praveen.typenote.ViewActivity">
 
     <TextView
+        android:id="@+id/view_text"
         android:layout_width="match_parent"
-        android:textSize="18sp"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
         android:animateLayoutChanges="true"
         android:textColor="@color/colorPrimaryText"
-        android:layout_height="match_parent"
-        android:id="@+id/view_text"
-        android:layout_margin="16dp"/>
+        android:textSize="18sp" />
 
 </RelativeLayout>

@@ -6,39 +6,42 @@ public class Note {
     private String _note;
     private String _date;
 
-    public Note(){}
+    public Note() {
+    }
 
-    public Note(int id, String note, String date){
+    public Note(int id, String note, String date) {
         this._id = id;
         this._note = note;
         this._date = date;
     }
 
-    public Note(String note, String date){
+    public Note(String note, String date) {
         this._note = note;
         this._date = date;
     }
 
-    public int getID(){
+    public int getID() {
         return this._id;
     }
 
-    public void setID(int id){
+    public void setID(int id) {
         this._id = id;
     }
 
-    public String getNote(){
+    public String getNote() {
         return this._note;
     }
 
-    public void setNote(String note){
+    public void setNote(String note) {
         this._note = note;
     }
 
-    public String getDate(){
+    public String getDate() {
         return this._date;
     }
 
-    public void setDate(String date){ this._date = date; }
+    public void setDate(String date) {
+        this._date = date;
+    }
 
 }

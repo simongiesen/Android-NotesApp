@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,25 +24,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(@NonNull SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_NOTES + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NOTE + " TEXT," + KEY_DATE + " TEXT);";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
         onCreate(db);
     }
 
+    @NonNull
     public Note getNote(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NOTES, new String[] { KEY_ID, KEY_NOTE, KEY_DATE}, KEY_ID + "=?", new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NOTES, new String[]{KEY_ID, KEY_NOTE, KEY_DATE}, KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null) cursor.moveToFirst();
         Note note = new Note(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2));
         return note;
     }
 
+    @NonNull
     public List<Note> getAllNotes() {
         List<Note> noteList = new ArrayList<Note>();
         String selectQuery = "SELECT  * FROM " + TABLE_NOTES;
@@ -67,21 +70,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    public int updateNote(Note note) {
+    public int updateNote(@NonNull Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_NOTE, note.getNote());
         values.put(KEY_DATE, note.getDate());
-        return db.update(TABLE_NOTES, values, KEY_ID + " = ?", new String[] { String.valueOf(note.getID()) });
+        return db.update(TABLE_NOTES, values, KEY_ID + " = ?", new String[]{String.valueOf(note.getID())});
     }
 
-    public void deleteNote(Note note) {
+    public void deleteNote(@NonNull Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NOTES, KEY_ID + " = ?", new String[] { String.valueOf(note.getID()) });
+        db.delete(TABLE_NOTES, KEY_ID + " = ?", new String[]{String.valueOf(note.getID())});
         db.close();
     }
 
-    public void addNote(Note note) {
+    public void addNote(@NonNull Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_NOTE, note.getNote());

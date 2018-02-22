@@ -3,8 +3,8 @@ package io.praveen.typenote;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,13 +25,14 @@ public class LicensesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_licenses);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Tools & Licenses");
-        SS.setSpan (new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        getSupportActionBar().setTitle(SS);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        SS.setSpan(new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(SS);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         List<String> l = new ArrayList<>();
         l.add("Android Support Libraries");
         l.add("Calligraphy Custom Fonts");
@@ -47,7 +48,7 @@ public class LicensesActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         Intent i = new Intent(LicensesActivity.this, AboutActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
@@ -60,7 +61,7 @@ public class LicensesActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         Intent i = new Intent(LicensesActivity.this, AboutActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);

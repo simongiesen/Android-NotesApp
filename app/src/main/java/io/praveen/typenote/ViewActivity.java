@@ -3,18 +3,16 @@ package io.praveen.typenote;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
-import com.anjlab.android.iab.v3.BillingProcessor;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -22,6 +20,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class ViewActivity extends AppCompatActivity {
 
     TextView tv;
+    @Nullable
     String noteText;
     int id;
 
@@ -29,19 +28,19 @@ public class ViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
-        if (getIntent().getExtras() != null){
+        if (getIntent().getExtras() != null) {
             noteText = getIntent().getExtras().getString("note");
         }
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
-        int length = noteText.length();
+        int length = noteText != null ? noteText.length() : 0;
         SpannableStringBuilder SS;
-        if (length > 10){
+        if (length > 10) {
             SS = new SpannableStringBuilder(noteText.substring(0, 9) + "...");
         } else {
             SS = new SpannableStringBuilder(noteText);
         }
-        SS.setSpan (new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        SS.setSpan(new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(SS);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,7 +57,7 @@ public class ViewActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         Intent i = new Intent(ViewActivity.this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
@@ -73,17 +72,17 @@ public class ViewActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.copy){
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.copy) {
             Snackbar.make(tv, "Copied!", Snackbar.LENGTH_SHORT).show();
-        } else if (item.getItemId() == R.id.edit){
+        } else if (item.getItemId() == R.id.edit) {
             Intent intent = new Intent(ViewActivity.this, EditActivity.class);
             intent.putExtra("note", noteText);
             intent.putExtra("id", id);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
-        } else if (item.getItemId() == R.id.share){
+        } else if (item.getItemId() == R.id.share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, noteText);

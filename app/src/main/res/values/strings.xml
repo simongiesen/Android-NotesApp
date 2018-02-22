@@ -80,4 +80,9 @@
     <string name="copy">Copy</string>
     <string name="edit">Edit</string>
     <string name="share">Share</string>
+    <string name="search">Search</string>
+    <string name="settings">Settings</string>
+    <string name="the_simplest_note_taking_app">The simplest note taking app!</string>
+    <string name="type_note_v10_0">Type Note v10.0</string>
+    <string name="about">About</string>
 </resources>

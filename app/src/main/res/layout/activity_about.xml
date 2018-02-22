@@ -1,56 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#FFFFFF"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:id="@+id/about_scroll"
+    android:orientation="vertical"
     tools:context="io.praveen.typenote.AboutActivity">
 
-    <ScrollView
-        android:id="@+id/about_scroll"
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        app:srcCompat="@mipmap/ic_launcher_foreground"
+        android:contentDescription="@string/about" />
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:text="@string/type_note_v10_0"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="22sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/the_simplest_note_taking_app"
+        android:textAlignment="center"
+        android:textColor="@color/colorSecondaryText"/>
 
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:adjustViewBounds="true"
-                android:cropToPadding="true"
-                app:srcCompat="@mipmap/ic_launcher_foreground" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/aboutRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
+        android:scrollbars="vertical" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimaryText"
-                android:textSize="24sp"
-                android:text="Type Note v8.0"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/colorSecondaryText"
-                android:textSize="18sp"
-                android:layout_marginTop="4dp"
-                android:text="The simplest note taking app!"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:layout_marginTop="32dp"
-                android:id="@+id/aboutRecyclerView"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</RelativeLayout>
+</LinearLayout>

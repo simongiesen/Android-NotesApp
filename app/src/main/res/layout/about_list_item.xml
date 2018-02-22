@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:focusable="true"
+    android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
+    android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
-    android:layout_height="wrap_content">
+    android:focusable="true"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:animateLayoutChanges="true">
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:layout_width="match_parent"
             android:id="@+id/about_text"
-            android:textSize="18sp"
-            android:textColor="@color/colorPrimaryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

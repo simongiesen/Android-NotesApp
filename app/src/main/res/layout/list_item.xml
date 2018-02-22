@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/ll"
-    android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:focusable="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
+    android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
-    android:layout_height="wrap_content">
+    android:focusable="true"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:baselineAligned="false"
-        android:layout_height="wrap_content"
+        android:id="@+id/view_foreground"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:id="@+id/view_foreground">
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:layout_width="match_parent"
             android:id="@+id/text_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:textSize="18sp"
             android:maxLines="2"
             android:textColor="@color/colorPrimaryText"
-            android:layout_height="wrap_content" />
+            android:textSize="18sp" />
 
         <TextView
-            android:layout_marginTop="4dp"
-            android:textColor="@color/colorSecondaryText"
-            android:layout_width="match_parent"
             android:id="@+id/text_date"
-            android:textSize="12sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:animateLayoutChanges="true"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/colorSecondaryText"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
