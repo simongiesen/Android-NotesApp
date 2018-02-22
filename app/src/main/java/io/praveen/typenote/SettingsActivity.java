@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.view.MenuItem;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -26,6 +27,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Settings");
@@ -43,6 +45,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity{
             bindPreferenceSummaryToValue(findPreference("notification"));
         }
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
