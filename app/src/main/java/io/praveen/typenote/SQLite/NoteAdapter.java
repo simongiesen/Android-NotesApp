@@ -1,5 +1,6 @@
 package io.praveen.typenote.SQLite;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,17 +20,22 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     private List<Note> fullNote;
     private List<Note> filtered;
 
+    public NoteAdapter(List<Note> notes) {
+        this.notes = notes;
+        fullNote = notes;
+    }
+
+    @NonNull
     @Override
     public Filter getFilter() {
         return new Filter() {
+            @NonNull
             @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
+            protected FilterResults performFiltering(@NonNull CharSequence charSequence) {
                 String charString = charSequence.toString();
                 if (charString.length() == 0) {
                     ArrayList<Note> filteredList = new ArrayList<>();
-                    for (Note i : fullNote) {
-                        filteredList.add(i);
-                    }
+                    filteredList.addAll(fullNote);
                     notes = filteredList;
                 } else {
                     ArrayList<Note> filteredList = new ArrayList<>();
@@ -46,37 +52,22 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
             }
 
             @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            protected void publishResults(CharSequence charSequence, @NonNull FilterResults filterResults) {
                 filtered = (ArrayList<Note>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
     }
 
-
-
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView text, date;
-        MyViewHolder(View view) {
-            super(view);
-            text = view.findViewById(R.id.text_note);
-            date = view.findViewById(R.id.text_date);
-        }
-    }
-
-    public NoteAdapter(List<Note> notes) {
-        this.notes = notes;
-        fullNote = notes;
-    }
-
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Note note = notes.get(position);
         holder.setIsRecyclable(false);
         holder.text.setText(note.getNote());
@@ -86,6 +77,16 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     @Override
     public int getItemCount() {
         return notes.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView text, date;
+
+        MyViewHolder(@NonNull View view) {
+            super(view);
+            text = view.findViewById(R.id.text_note);
+            date = view.findViewById(R.id.text_date);
+        }
     }
 
 }

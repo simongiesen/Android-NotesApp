@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Android-TypeNote.iml" filepath="$PROJECT_DIR$/Android-TypeNote.iml" />
-      <module fileurl="file://C:\Users\srikarn\Documents\GitHub\Android-TypeNote\TypeNote.iml" filepath="C:\Users\srikarn\Documents\GitHub\Android-TypeNote\TypeNote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TypeNote.iml" filepath="$PROJECT_DIR$/TypeNote.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

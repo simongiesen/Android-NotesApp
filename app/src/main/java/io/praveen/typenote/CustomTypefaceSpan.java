@@ -2,6 +2,7 @@ package io.praveen.typenote;
 
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.text.TextPaint;
 import android.text.style.TypefaceSpan;
 
@@ -9,22 +10,12 @@ public class CustomTypefaceSpan extends TypefaceSpan {
 
     private final Typeface newType;
 
-    public CustomTypefaceSpan(String family, Typeface type) {
+    CustomTypefaceSpan(String family, Typeface type) {
         super(family);
         newType = type;
     }
 
-    @Override
-    public void updateDrawState(TextPaint ds) {
-        applyCustomTypeFace(ds, newType);
-    }
-
-    @Override
-    public void updateMeasureState(TextPaint paint) {
-        applyCustomTypeFace(paint, newType);
-    }
-
-    private static void applyCustomTypeFace(Paint paint, Typeface tf) {
+    private static void applyCustomTypeFace(@NonNull Paint paint, @NonNull Typeface tf) {
         int oldStyle;
         Typeface old = paint.getTypeface();
         if (old == null) {
@@ -43,6 +34,16 @@ public class CustomTypefaceSpan extends TypefaceSpan {
         }
 
         paint.setTypeface(tf);
+    }
+
+    @Override
+    public void updateDrawState(@NonNull TextPaint ds) {
+        applyCustomTypeFace(ds, newType);
+    }
+
+    @Override
+    public void updateMeasureState(@NonNull TextPaint paint) {
+        applyCustomTypeFace(paint, newType);
     }
 
 }

@@ -17,30 +17,32 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+
 import android.support.v4.app.ShareCompat;
 import android.support.v4.view.MenuItemCompat;
+
+
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputFilter;
+import android.support.v7.widget.SearchView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.support.v7.widget.SearchView;
-import android.widget.TextView;
 
 import java.util.List;
+
 import io.praveen.typenote.SQLite.ClickListener;
 import io.praveen.typenote.SQLite.DatabaseHandler;
 import io.praveen.typenote.SQLite.Note;
@@ -49,14 +51,11 @@ import io.praveen.typenote.SQLite.RecyclerTouchListener;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
     CoordinatorLayout sv;
-    ImageView edit, share;
     NoteAdapter mAdapter;
-    View v;
-    TextView text;
     SharedPreferences preferences;
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -68,8 +67,10 @@ public class MainActivity extends AppCompatActivity{
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Type Note");
-        SS.setSpan (new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-        getSupportActionBar().setTitle(SS);
+        SS.setSpan(new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(SS);
+        }
         fab = findViewById(R.id.fab);
         sv = findViewById(R.id.fabView);
         populateData();
@@ -90,10 +91,10 @@ public class MainActivity extends AppCompatActivity{
         if (this.getIntent().getExtras() != null && this.getIntent().getExtras().containsKey("note")) {
             c = getIntent().getExtras().getBoolean("edit");
         }
-        if (b){
+        if (b) {
             Snackbar.make(sv, "Note added successfully!", Snackbar.LENGTH_SHORT).show();
         }
-        if (c){
+        if (c) {
             Snackbar.make(sv, "Note edited successfully!", Snackbar.LENGTH_SHORT).show();
         }
         boolean shortcut = preferences.getBoolean("shortcut", true);
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity{
                 Intent intent = new Intent(this, NoteActivity.class);
                 intent.putExtra("IS_FROM_NOTIFICATION", true);
                 @SuppressLint("WrongConstant") PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, NotificationManager.IMPORTANCE_LOW);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
                 builder.setContentTitle("Tap to add a note!");
                 builder.setContentText("Note something productive today!");
                 builder.setContentIntent(pendingIntent);
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity{
                 builder.setOngoing(true);
                 builder.setAutoCancel(true);
                 builder.setSmallIcon(R.drawable.notification_white);
-                builder.setPriority(Notification.PRIORITY_MAX);
+                builder.setPriority(NotificationManager.IMPORTANCE_LOW);
                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
                 stackBuilder.addNextIntent(intent);
                 PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity{
                     notificationManger.notify(1, notification);
                 }
             }
-        } else{
+        } else {
             NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             if (nMgr != null) {
                 nMgr.cancelAll();
@@ -155,12 +156,12 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public void populateData(){
+    public void populateData() {
         final DatabaseHandler db = new DatabaseHandler(this);
         final List<Note> l = db.getAllNotes();
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
         final RelativeLayout rl = findViewById(R.id.placeholder);
-        if (l.isEmpty()){
+        if (l.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
             rl.setVisibility(View.VISIBLE);
         }
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity{
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
+
                 if (v != view){
                     if (edit != null) {
                         edit.setVisibility(View.GONE);
@@ -217,7 +219,16 @@ public class MainActivity extends AppCompatActivity{
                     }
                 });
                 Snackbar.make(sv, "Note copied!", Snackbar.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(MainActivity.this, ViewActivity.class);
+                intent.putExtra("note", note.getNote());
+                intent.putExtra("id", note.getID());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+
             }
+
             @SuppressLint("SetTextI18n")
             @Override
             public void onLongClick(View view, final int position) {
@@ -227,7 +238,8 @@ public class MainActivity extends AppCompatActivity{
                 alertDialog.setMessage("Do you want to delete the note? This action cannot be undone!");
                 alertDialog.setIcon(R.drawable.ic_delete);
                 alertDialog.setPositiveButton("GO BACK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {}
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
                 });
                 alertDialog.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -235,8 +247,12 @@ public class MainActivity extends AppCompatActivity{
                         Snackbar.make(sv, "Note deleted!", Snackbar.LENGTH_SHORT).show();
                         l.remove(position);
                         mAdapter.notifyItemRemoved(position);
+
                         mAdapter.notifyDataSetChanged();
-                        if (l.isEmpty()){
+
+
+                        if (l.isEmpty()) {
+
                             recyclerView.setVisibility(View.GONE);
                             rl.setVisibility(View.VISIBLE);
                         }
@@ -253,22 +269,21 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem search = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         search(searchView);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.settings){
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.settings) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             finish();
-        } else if (item.getItemId() == R.id.about){
+        } else if (item.getItemId() == R.id.about) {
             Intent i = new Intent(MainActivity.this, AboutActivity.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
@@ -277,10 +292,13 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
-    private void search(SearchView searchView) {
+    private void search(@NonNull SearchView searchView) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) { return false; }
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 mAdapter.getFilter().filter(newText);
@@ -315,7 +333,7 @@ public class MainActivity extends AppCompatActivity{
 
         // COMPLETED (3) Create a title for the chooser window that will pop up
         /* This is just the title of the window that will pop up when we call startActivity */
-        String title = "Learning How to Share";
+        String title = "Share Note";
 
         // COMPLETED (4) Use ShareCompat.IntentBuilder to build the Intent and start the chooser
         /* ShareCompat.IntentBuilder provides a fluent API for creating Intents */

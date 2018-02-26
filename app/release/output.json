@@ -1,1 +1,18 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":9},"path":"app-release.apk","properties":{"packageId":"io.praveen.typenote","split":"","minSdkVersion":"18"}}]
+[
+  {
+    "outputType": {
+      "type": "APK"
+    },
+    "apkInfo": {
+      "type": "MAIN",
+      "splits": [],
+      "versionCode": 10
+    },
+    "path": "app-release.apk",
+    "properties": {
+      "packageId": "io.praveen.typenote",
+      "split": "",
+      "minSdkVersion": "18"
+    }
+  }
+]
