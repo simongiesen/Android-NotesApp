@@ -33,13 +33,7 @@ public class ViewActivity extends AppCompatActivity {
         }
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
-        int length = noteText != null ? noteText.length() : 0;
-        SpannableStringBuilder SS;
-        if (length > 10) {
-            SS = new SpannableStringBuilder(noteText.substring(0, 9) + "...");
-        } else {
-            SS = new SpannableStringBuilder(noteText);
-        }
+        SpannableStringBuilder SS = new SpannableStringBuilder("Type Note");
         SS.setSpan(new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(SS);

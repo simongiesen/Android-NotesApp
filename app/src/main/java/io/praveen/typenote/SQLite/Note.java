@@ -6,7 +6,7 @@ public class Note {
     private String _note;
     private String _date;
 
-    public Note() {
+    Note() {
     }
 
     public Note(int id, String note, String date) {
@@ -24,7 +24,7 @@ public class Note {
         return this._id;
     }
 
-    public void setID(int id) {
+    void setID(int id) {
         this._id = id;
     }
 
@@ -32,15 +32,15 @@ public class Note {
         return this._note;
     }
 
-    public void setNote(String note) {
+    void setNote(String note) {
         this._note = note;
     }
 
-    public String getDate() {
+    String getDate() {
         return this._date;
     }
 
-    public void setDate(String date) {
+    void setDate(String date) {
         this._date = date;
     }
 

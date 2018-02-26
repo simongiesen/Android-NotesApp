@@ -16,7 +16,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
