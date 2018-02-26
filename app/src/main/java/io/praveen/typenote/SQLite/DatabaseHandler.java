@@ -9,14 +9,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.praveen.typenote.SQLite.DatabaseContract.DatabaseEntry.*;
+
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "noteManager";
-    private static final String TABLE_NOTES = "notes";
-    private static final String KEY_ID = "id";
-    private static final String KEY_NOTE = "note";
-    private static final String KEY_DATE = "date";
+    private static final String DATABASE_NAME = "noteManager.db";
+
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
