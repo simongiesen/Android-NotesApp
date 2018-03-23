@@ -5,13 +5,13 @@ package io.praveen.typenote.SQLite;
  */
 import android.provider.BaseColumns;
 
-public class DatabaseContract {
+class DatabaseContract {
 
-    public static final class DatabaseEntry implements BaseColumns{
-        public static final String TABLE_NOTES = "notes";
-        public static final String KEY_ID = "id";
-        public static final String KEY_NOTE = "note";
-        public static final String KEY_DATE = "date";
+    static final class DatabaseEntry implements BaseColumns{
+        static final String TABLE_NOTES = "notes";
+        static final String KEY_ID = "id";
+        static final String KEY_NOTE = "note";
+        static final String KEY_DATE = "date";
     }
 
 }

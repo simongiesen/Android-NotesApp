@@ -110,7 +110,7 @@ public class NoteActivity extends AppCompatActivity {
                 String note = text.getText().toString();
                 if (note.length() > 0) {
                     Calendar c = Calendar.getInstance();
-                    SimpleDateFormat df = new SimpleDateFormat("HH:mm dd/MM/yyyy");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("HH:mm dd/MM/yyyy");
                     String formattedDate = df.format(c.getTime());
                     DatabaseHandler db = new DatabaseHandler(NoteActivity.this);
                     db.addNote(new Note(note, formattedDate));
