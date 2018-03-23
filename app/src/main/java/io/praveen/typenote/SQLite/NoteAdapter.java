@@ -19,6 +19,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     private List<Note> notes;
     private List<Note> fullNote;
     private List<Note> filtered;
+    DatabaseHandler databaseHandler;
 
     public NoteAdapter(List<Note> notes) {
         this.notes = notes;
@@ -79,7 +80,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         return notes.size();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    public void removeItem(int position) {
+        notes.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, notes.size());
+        notifyDataSetChanged();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView text, date;
 
         MyViewHolder(@NonNull View view) {
@@ -88,5 +96,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
             date = view.findViewById(R.id.text_date);
         }
     }
+
 
 }

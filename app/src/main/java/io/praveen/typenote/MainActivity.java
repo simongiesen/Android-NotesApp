@@ -29,6 +29,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.Menu;
@@ -166,6 +167,25 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
+
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                final Note note = l.get(position);
+                db.deleteNote(note);
+                mAdapter.removeItem(position);
+                Snackbar.make(sv, "Note deleted!", Snackbar.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
+
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
             @Override
             public void onClick(View view, final int position) {

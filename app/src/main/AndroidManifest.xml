@@ -24,7 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NoteActivity"
+        <activity
+            android:name=".NoteActivity"
+            android:parentActivityName=".MainActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".EditActivity"
