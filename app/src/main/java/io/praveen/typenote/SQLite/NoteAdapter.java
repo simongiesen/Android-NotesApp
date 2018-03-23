@@ -19,6 +19,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     private List<Note> notes;
     private List<Note> fullNote;
     private List<Note> filtered;
+    DatabaseHandler databaseHandler;
 
     public NoteAdapter(List<Note> notes) {
         this.notes = notes;
@@ -77,6 +78,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     @Override
     public int getItemCount() {
         return notes.size();
+    }
+
+    public void removeItem(int position) {
+        notes.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, notes.size());
+        notifyDataSetChanged();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
