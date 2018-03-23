@@ -1,15 +1,16 @@
 <resources>
-    <string name="app_name">Type Note</string>
+    <string name="app_name">Notes</string>
     <string name="action_settings">Settings</string>
-    <string name="add_note">Add todo\'s, any notes or your inspiration for today!</string>
-    <string name="empty_list">It\'s empty here, let\'s add something productive today!</string>
-    <string name="empty_list_image">Empty List Image</string>
+    <string name="add_note">Add todo, notes or your inspiration for today.</string>
+    <string name="del_note">To delete, go back and long press the note.</string>
+    <string name="empty_list">It\'s empty here, add something productive today!</string>
+    <string name="empty_list_image">Empty List</string>
     <string name="copy">Copy</string>
     <string name="edit">Edit</string>
     <string name="share">Share</string>
     <string name="search">Search</string>
     <string name="settings">Settings</string>
     <string name="the_simplest_note_taking_app">The simplest note taking app!</string>
-    <string name="type_note_v10_0">Type Note v10.0</string>
+    <string name="type_note">Notes</string>
     <string name="about">About</string>
 </resources>

@@ -49,9 +49,6 @@ public class LicensesActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(LicensesActivity.this, AboutActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
         finish();
     }
 
@@ -63,7 +60,6 @@ public class LicensesActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         Intent i = new Intent(LicensesActivity.this, AboutActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
         return true;

@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorIcons"
     android:fitsSystemWindows="true"
     tools:context="io.praveen.typenote.NoteActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="8dp"
         android:gravity="top"
         android:orientation="vertical">
@@ -17,11 +18,11 @@
         <android.support.design.widget.TextInputEditText
             android:id="@+id/add_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="top"
             android:gravity="top"
+            android:backgroundTint="@color/colorIcons"
             android:hint="@string/add_note"
-            android:lines="6"
             android:textColor="@color/colorPrimaryText"
             android:textColorHint="@color/colorSecondaryText"
             tools:fontPath="fonts/whitney.ttf" />

@@ -66,8 +66,8 @@ public class NoteActivity extends AppCompatActivity {
                 intent.putExtra("IS_FROM_NOTIFICATION", true);
                 @SuppressLint("WrongConstant") PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, NotificationManager.IMPORTANCE_LOW);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-                builder.setContentTitle("Tap to add a note!");
-                builder.setContentText("Note something productive today!");
+                builder.setContentTitle("Tap to add a note");
+                builder.setContentText("Note something productive today.");
                 builder.setContentIntent(pendingIntent);
                 builder.setTicker("Add Notes");
                 builder.setChannelId(channelId);
@@ -87,8 +87,8 @@ public class NoteActivity extends AppCompatActivity {
                 intent.putExtra("IS_FROM_NOTIFICATION", true);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
                 Notification.Builder builder = new Notification.Builder(getApplicationContext());
-                builder.setContentTitle("Tap to add a note!");
-                builder.setContentText("Note something productive today!");
+                builder.setContentTitle("Tap to add a note");
+                builder.setContentText("Note something productive today.");
                 builder.setContentIntent(pendingIntent);
                 builder.setTicker("Add Notes");
                 builder.setOngoing(true);
@@ -115,7 +115,6 @@ public class NoteActivity extends AppCompatActivity {
                     DatabaseHandler db = new DatabaseHandler(NoteActivity.this);
                     db.addNote(new Note(note, formattedDate));
                     Intent intent = new Intent(NoteActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("note", true);
                     startActivity(intent);
                     finish();
@@ -139,7 +138,6 @@ public class NoteActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent i = new Intent(NoteActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
     }
@@ -152,7 +150,6 @@ public class NoteActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         Intent i = new Intent(NoteActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
         return true;

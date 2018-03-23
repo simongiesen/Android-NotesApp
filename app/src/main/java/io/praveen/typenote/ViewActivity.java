@@ -33,7 +33,7 @@ public class ViewActivity extends AppCompatActivity {
         }
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
-        SpannableStringBuilder SS = new SpannableStringBuilder("Type Note");
+        SpannableStringBuilder SS = new SpannableStringBuilder("View Note");
         SS.setSpan(new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(SS);
@@ -53,7 +53,6 @@ public class ViewActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         Intent i = new Intent(ViewActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
         return true;
@@ -73,16 +72,14 @@ public class ViewActivity extends AppCompatActivity {
             Intent intent = new Intent(ViewActivity.this, EditActivity.class);
             intent.putExtra("note", noteText);
             intent.putExtra("id", id);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish();
         } else if (item.getItemId() == R.id.share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_TEXT, noteText);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
-        }else  if (item.getItemId() == android.R.id.home) {
+        } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return true;
@@ -91,7 +88,6 @@ public class ViewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent i = new Intent(ViewActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
     }

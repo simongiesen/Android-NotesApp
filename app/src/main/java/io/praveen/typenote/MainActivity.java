@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
-        SpannableStringBuilder SS = new SpannableStringBuilder("Type Note");
+        SpannableStringBuilder SS = new SpannableStringBuilder("Notes");
         SS.setSpan(new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(SS);
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, NoteActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 finish();
             }
@@ -98,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 int notificationId = 1;
                 NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                String channelId = "TN_1";
-                String channelName = "Type Note Shortcuts";
+                String channelId = "NOTES_ADD";
+                String channelName = "Notes Shortcuts";
                 @SuppressLint("WrongConstant") NotificationChannel mChannel = new NotificationChannel(channelId, channelName, 3);
                 if (notificationManager != null) {
                     mChannel.setSound(null, null);
@@ -109,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("IS_FROM_NOTIFICATION", true);
                 @SuppressLint("WrongConstant") PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, NotificationManager.IMPORTANCE_LOW);
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
-                builder.setContentTitle("Tap to add a note!");
-                builder.setContentText("Note something productive today!");
+                builder.setContentTitle("Tap to add a note");
+                builder.setContentText("Note something productive today.");
                 builder.setContentIntent(pendingIntent);
                 builder.setTicker("Add Notes");
                 builder.setChannelId(channelId);
@@ -130,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("IS_FROM_NOTIFICATION", true);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, 0);
                 Notification.Builder builder = new Notification.Builder(getApplicationContext());
-                builder.setContentTitle("Tap to add a note!");
-                builder.setContentText("Note something productive today!");
+                builder.setContentTitle("Tap to add a note");
+                builder.setContentText("Note something productive today.");
                 builder.setContentIntent(pendingIntent);
                 builder.setTicker("Add Notes");
                 builder.setOngoing(true);
@@ -169,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
 
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        /* new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -184,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.removeItem(position);
                 Snackbar.make(sv, "Note deleted!", Snackbar.LENGTH_SHORT).show();
             }
-        }).attachToRecyclerView(recyclerView);
+        }).attachToRecyclerView(recyclerView); */
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
             @Override
@@ -198,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ViewActivity.class);
                 intent.putExtra("note", note.getNote());
                 intent.putExtra("id", note.getID());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             }
@@ -208,10 +206,9 @@ public class MainActivity extends AppCompatActivity {
             public void onLongClick(View view, final int position) {
                 final Note note = l.get(position);
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                alertDialog.setTitle("Delete Note");
-                alertDialog.setMessage("Do you want to delete the note? This action cannot be undone!");
-                alertDialog.setIcon(R.drawable.ic_delete);
-                alertDialog.setPositiveButton("GO BACK", new DialogInterface.OnClickListener() {
+                alertDialog.setTitle("Delete Note?");
+                alertDialog.setMessage("This action cannot be reversed!");
+                alertDialog.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
@@ -250,12 +247,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.settings) {
             Intent i = new Intent(MainActivity.this, SettingsActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             finish();
         } else if (item.getItemId() == R.id.about) {
             Intent i = new Intent(MainActivity.this, AboutActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
             finish();
         }

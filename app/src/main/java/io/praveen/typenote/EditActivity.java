@@ -37,9 +37,9 @@ public class EditActivity extends AppCompatActivity {
         SS.setSpan(new CustomTypefaceSpan("", font2), 0, SS.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(SS);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         String noteText = "";
-
         if (getIntent().getExtras() != null) {
             noteText = getIntent().getExtras().getString("note");
         }
@@ -87,9 +87,6 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        Intent i = new Intent(EditActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
         finish();
         return true;
     }

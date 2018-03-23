@@ -65,13 +65,10 @@ public class AboutActivity extends AppCompatActivity implements BillingProcessor
             public void onClick(View view, final int position) {
                 if (position == 0) {
                     Intent i = new Intent(AboutActivity.this, ContributorsActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
                 } else if (position == 1) {
                     Intent i = new Intent(AboutActivity.this, LicensesActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
-                    finish();
                 } else if (position == 2) {
                     bp.purchase(AboutActivity.this, "typenote_donate");
                 } else if (position == 3) {
@@ -89,7 +86,6 @@ public class AboutActivity extends AppCompatActivity implements BillingProcessor
     @Override
     public void onBackPressed() {
         Intent i = new Intent(AboutActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
     }
@@ -102,7 +98,6 @@ public class AboutActivity extends AppCompatActivity implements BillingProcessor
     @Override
     public boolean onSupportNavigateUp() {
         Intent i = new Intent(AboutActivity.this, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
         return true;
