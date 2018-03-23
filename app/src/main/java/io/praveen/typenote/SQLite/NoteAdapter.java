@@ -89,4 +89,5 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         }
     }
 
+
 }

@@ -180,53 +180,12 @@ public class MainActivity extends AppCompatActivity {
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
-
-                if (v != view){
-                    if (edit != null) {
-                        edit.setVisibility(View.GONE);
-                        share.setVisibility(View.GONE);
-                        text.setMaxLines(2);
-                    }
-                }
-                v = view;
-                edit = view.findViewById(R.id.list_edit);
-                share = view.findViewById(R.id.list_share);
-                text = view.findViewById(R.id.text_note);
-                text.setMaxLines(100);
-                edit.setVisibility(View.VISIBLE);
-                edit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                        intent.putExtra("note", note.getNote());
-                        intent.putExtra("id", note.getID());
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-                share.setVisibility(View.VISIBLE);
-                share.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String text = note.getNote();
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
-                        sendIntent.setType("text/plain");
-                        startActivity(sendIntent);
-
-                    }
-                });
-                Snackbar.make(sv, "Note copied!", Snackbar.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(MainActivity.this, ViewActivity.class);
                 intent.putExtra("note", note.getNote());
                 intent.putExtra("id", note.getID());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
-
             }
 
             @SuppressLint("SetTextI18n")

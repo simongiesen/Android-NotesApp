@@ -88,7 +88,17 @@ public class ViewActivity extends AppCompatActivity {
             sendIntent.putExtra(Intent.EXTRA_TEXT, noteText);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
+        }else  if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(ViewActivity.this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+        finish();
     }
 }
