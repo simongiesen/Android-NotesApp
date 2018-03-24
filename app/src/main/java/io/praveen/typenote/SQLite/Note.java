@@ -36,7 +36,7 @@ public class Note {
         this._note = note;
     }
 
-    String getDate() {
+    public String getDate() {
         return this._date;
     }
 

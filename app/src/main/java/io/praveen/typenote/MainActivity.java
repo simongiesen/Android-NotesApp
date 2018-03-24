@@ -1,5 +1,6 @@
 package io.praveen.typenote;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -13,9 +14,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -35,9 +40,22 @@ import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Duration;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.praveen.typenote.SQLite.ClickListener;
 import io.praveen.typenote.SQLite.DatabaseHandler;
@@ -52,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     CoordinatorLayout sv;
     NoteAdapter mAdapter;
+    List<Note> l;
     SharedPreferences preferences;
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -151,9 +170,47 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void backup() {
+        try {
+            Date now = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyHHmmss", Locale.ENGLISH);
+            String fileName = "BACKUP" + formatter.format(now) + ".txt";
+            File root = new File(Environment.getExternalStorageDirectory(), "Notes");
+            String location = "Storage/Notes/"+fileName;
+            boolean b = true;
+            if (!root.exists()) {
+                b = root.mkdirs();
+            }
+            if (!b) {
+                Toast.makeText(MainActivity.this, "Backup Failed", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            File file = new File(root, fileName);
+            FileWriter writer = new FileWriter(file);
+            for(int i = 0; i < l.size(); i++){
+                writer.append(l.get(i).getNote()).append("\n").append(l.get(i).getDate()).append("\n\n=====================\n\n");
+            }
+            writer.flush();
+            writer.close();
+            Toast.makeText(MainActivity.this, "Backup Successful!\nFind your notes at\n"+location, Toast.LENGTH_LONG).show();
+        } catch (Exception ignored) {}
+    }
+
+    public String backupString() {
+        String s = "Notes Backup Error";
+        try {
+            StringBuilder writer = new StringBuilder();
+            for(int i = 0; i < l.size(); i++){
+                writer.append(l.get(i).getNote()).append("\n").append(l.get(i).getDate()).append("\n\n=====================\n\n");
+            }
+            s = writer.toString();
+        } catch (Exception ignored) {}
+        return s;
+    }
+
     public void populateData() {
         final DatabaseHandler db = new DatabaseHandler(this);
-        final List<Note> l = db.getAllNotes();
+        l = db.getAllNotes();
         final RecyclerView recyclerView = findViewById(R.id.recyclerView);
         final RelativeLayout rl = findViewById(R.id.placeholder);
         if (l.isEmpty()) {
@@ -166,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-
 
         /* new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
@@ -205,27 +261,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLongClick(View view, final int position) {
                 final Note note = l.get(position);
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                alertDialog.setTitle("Delete Note?");
-                alertDialog.setMessage("This action cannot be reversed!");
-                alertDialog.setPositiveButton("DISMISS", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                alertDialog.setNegativeButton("DELETE", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        db.deleteNote(note);
-                        Snackbar.make(sv, "Note deleted!", Snackbar.LENGTH_SHORT).show();
-                        l.remove(position);
-                        mAdapter.notifyItemRemoved(position);
-                        mAdapter.notifyDataSetChanged();
-                        if (l.isEmpty()) {
-                            recyclerView.setVisibility(View.GONE);
-                            rl.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-                alertDialog.show();
+                new MaterialStyledDialog.Builder(MainActivity.this).setIcon(R.drawable.ic_delete)
+                        .setDescription("The note will be permanently deleted!")
+                        .setPositiveText("DISMISS")
+                        .setTitle("Delete note?")
+                        .withIconAnimation(false)
+                        .withDivider(true)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {}
+                        })
+                        .setNegativeText("DELETE")
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                db.deleteNote(note);
+                                Snackbar.make(sv, "Note deleted!", Snackbar.LENGTH_SHORT).show();
+                                l.remove(position);
+                                mAdapter.notifyItemRemoved(position);
+                                mAdapter.notifyDataSetChanged();
+                                if (l.isEmpty()) {
+                                    recyclerView.setVisibility(View.GONE);
+                                    rl.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        })
+                        .show();
             }
         }));
     }
@@ -243,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressLint("NewApi")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.settings) {
@@ -253,8 +315,51 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(i);
             finish();
+        } else if (item.getItemId() == R.id.backup) {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 11);
+            } else {
+                if (!l.isEmpty()) {
+                    new MaterialStyledDialog.Builder(MainActivity.this).setIcon(R.drawable.ic_unarchive)
+                            .setDescription("You can backup your notes via your phone memory or sending them by email!")
+                            .setPositiveText("EMAIL")
+                            .setTitle("Where to backup?")
+                            .withIconAnimation(false)
+                            .withDivider(true)
+                            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    backup();
+                                }
+                            })
+                            .setNegativeText("PHONE MEMORY")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    String s = backupString();
+                                    Intent in = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+                                    in.putExtra(Intent.EXTRA_SUBJECT, "Notes Backup");
+                                    in.putExtra(Intent.EXTRA_TEXT, s);
+                                    startActivity(in);
+                                }
+                            }).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Notes are empty!", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
         return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 11: {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(MainActivity.this, "Grant the required permissions to backup your notes.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     private void search(@NonNull SearchView searchView) {

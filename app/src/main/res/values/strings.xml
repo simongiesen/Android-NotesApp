@@ -13,4 +13,5 @@
     <string name="the_simplest_note_taking_app">The simplest note taking app!</string>
     <string name="type_note">Notes</string>
     <string name="about">About</string>
+    <string name="backup">Backup</string>
 </resources>
