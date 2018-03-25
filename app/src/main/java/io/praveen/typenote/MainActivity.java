@@ -11,11 +11,9 @@ import android.app.TaskStackBuilder;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -27,7 +25,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -40,15 +37,12 @@ import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
-import com.github.javiersantos.materialstyleddialogs.enums.Duration;
-import com.github.javiersantos.materialstyleddialogs.enums.Style;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -71,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     CoordinatorLayout sv;
     NoteAdapter mAdapter;
     List<Note> l;
+    int imp = 0;
     SharedPreferences preferences;
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -133,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setTicker("Add Notes");
                 builder.setChannelId(channelId);
                 builder.setOngoing(true);
+                builder.setColor(getResources().getColor(R.color.colorPrimary));
                 builder.setAutoCancel(true);
                 builder.setSmallIcon(R.drawable.notification_white);
                 builder.setPriority(NotificationManager.IMPORTANCE_LOW);
@@ -154,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setTicker("Add Notes");
                 builder.setOngoing(true);
                 builder.setAutoCancel(true);
+                builder.setColor(getResources().getColor(R.color.colorPrimary));
                 builder.setSmallIcon(R.drawable.notification_white);
                 builder.setPriority(Notification.PRIORITY_MAX);
                 Notification notification = builder.build();
@@ -242,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
         }).attachToRecyclerView(recyclerView); */
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
+
             @Override
             public void onClick(View view, final int position) {
                 final Note note = l.get(position);
@@ -253,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ViewActivity.class);
                 intent.putExtra("note", note.getNote());
                 intent.putExtra("id", note.getID());
+                intent.putExtra("imp", note.getStar());
+                intent.putExtra("date", note.getDate());
                 startActivity(intent);
                 finish();
             }
@@ -265,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
                         .setDescription("The note will be permanently deleted!")
                         .setPositiveText("DISMISS")
                         .setTitle("Delete note?")
+                        .setHeaderColor(R.color.colorRed)
                         .withIconAnimation(false)
                         .withDivider(true)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -278,15 +279,13 @@ public class MainActivity extends AppCompatActivity {
                                 db.deleteNote(note);
                                 Snackbar.make(sv, "Note deleted!", Snackbar.LENGTH_SHORT).show();
                                 l.remove(position);
-                                mAdapter.notifyItemRemoved(position);
-                                mAdapter.notifyDataSetChanged();
+                                recreate();
                                 if (l.isEmpty()) {
                                     recyclerView.setVisibility(View.GONE);
                                     rl.setVisibility(View.VISIBLE);
                                 }
                             }
-                        })
-                        .show();
+                        }).show();
             }
         }));
     }
@@ -315,6 +314,16 @@ public class MainActivity extends AppCompatActivity {
             Intent i = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(i);
             finish();
+        } else if (item.getItemId() == R.id.menu_imp){
+            if (imp == 0){
+                imp = 1;
+                mAdapter.getFilter().filter("#IMP");
+                item.setIcon(R.drawable.ic_turned_in_24);
+            } else {
+                imp = 0;
+                mAdapter.getFilter().filter("#ALL");
+                item.setIcon(R.drawable.ic_turned_in_not_24);
+            }
         } else if (item.getItemId() == R.id.backup) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 11);
@@ -323,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
                     new MaterialStyledDialog.Builder(MainActivity.this).setIcon(R.drawable.ic_unarchive)
                             .setDescription("You can backup your notes via your phone memory or sending them by email!")
                             .setPositiveText("EMAIL")
+                            .setHeaderColor(R.color.colorGreen)
                             .setTitle("Where to backup?")
                             .withIconAnimation(false)
                             .withDivider(true)
@@ -352,7 +362,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case 11: {
                 if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -35,6 +36,18 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
             protected FilterResults performFiltering(@NonNull CharSequence charSequence) {
                 String charString = charSequence.toString();
                 if (charString.length() == 0) {
+                    ArrayList<Note> filteredList = new ArrayList<>();
+                    filteredList.addAll(fullNote);
+                    notes = filteredList;
+                } else if(charString.equals("#IMP")){
+                    ArrayList<Note> filteredList = new ArrayList<>();
+                    for (Note i : fullNote) {
+                        if (i.getStar() == 1) {
+                            filteredList.add(i);
+                        }
+                    }
+                    notes = filteredList;
+                } else if(charString.equals("#ALL")){
                     ArrayList<Note> filteredList = new ArrayList<>();
                     filteredList.addAll(fullNote);
                     notes = filteredList;
@@ -73,6 +86,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         holder.setIsRecyclable(false);
         holder.text.setText(note.getNote());
         holder.date.setText(note.getDate());
+        if (note.getStar() == 1){
+            holder.imp.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -88,12 +104,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+
         TextView text, date;
+        ImageView imp;
 
         MyViewHolder(@NonNull View view) {
             super(view);
             text = view.findViewById(R.id.text_note);
             date = view.findViewById(R.id.text_date);
+            imp = view.findViewById(R.id.important);
         }
     }
 

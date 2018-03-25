@@ -20,6 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -36,6 +37,7 @@ public class NoteActivity extends AppCompatActivity {
     FloatingActionButton fab;
     TextInputEditText text;
     SharedPreferences preferences;
+    int imp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class NoteActivity extends AppCompatActivity {
                 builder.setContentIntent(pendingIntent);
                 builder.setTicker("Add Notes");
                 builder.setChannelId(channelId);
+                builder.setColor(getResources().getColor(R.color.colorPrimary));
                 builder.setOngoing(true);
                 builder.setAutoCancel(true);
                 builder.setSmallIcon(R.drawable.notification_white);
@@ -92,6 +95,7 @@ public class NoteActivity extends AppCompatActivity {
                 builder.setContentIntent(pendingIntent);
                 builder.setTicker("Add Notes");
                 builder.setOngoing(true);
+                builder.setColor(getResources().getColor(R.color.colorPrimary));
                 builder.setAutoCancel(true);
                 builder.setSmallIcon(R.drawable.notification_white);
                 builder.setPriority(Notification.PRIORITY_MAX);
@@ -113,7 +117,7 @@ public class NoteActivity extends AppCompatActivity {
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("HH:mm dd/MM/yyyy");
                     String formattedDate = df.format(c.getTime());
                     DatabaseHandler db = new DatabaseHandler(NoteActivity.this);
-                    db.addNote(new Note(note, formattedDate));
+                    db.addNote(new Note(note, formattedDate, imp));
                     Intent intent = new Intent(NoteActivity.this, MainActivity.class);
                     intent.putExtra("note", true);
                     startActivity(intent);
@@ -126,10 +130,24 @@ public class NoteActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.add_main, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             onBackPressed();
+        } else if (id == R.id.menu_important){
+            if (imp == 0){
+                imp = 1;
+                item.setIcon(R.drawable.ic_turned_in_24);
+            } else{
+                imp = 0;
+                item.setIcon(R.drawable.ic_turned_in_not_24);
+            }
         }
 
         return super.onOptionsItemSelected(item);

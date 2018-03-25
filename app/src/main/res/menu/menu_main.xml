@@ -9,13 +9,17 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
     <item
-        android:icon="@drawable/ic_unarchive"
-        android:id="@+id/backup"
-        android:title="@string/backup"
-        app:showAsAction="ifRoom"/>
+        android:icon="@drawable/ic_turned_in_not_24"
+        android:id="@+id/menu_imp"
+        android:title="@string/important"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/about"
         android:title="@string/about" />
+    <item
+        android:icon="@drawable/ic_unarchive_24"
+        android:id="@+id/backup"
+        android:title="@string/backup"/>
     <item
         android:id="@+id/settings"
         android:title="@string/settings" />

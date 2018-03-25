@@ -37,6 +37,7 @@ public class LicensesActivity extends AppCompatActivity {
         l.add("Android Support Libraries");
         l.add("Calligraphy Custom Fonts");
         l.add("Android In-App Billing v3");
+        l.add("Material Styled Dialogs");
         final RecyclerView recyclerView = findViewById(R.id.licensesRecyclerView);
         AboutAdapter mAdapter = new AboutAdapter(l);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());

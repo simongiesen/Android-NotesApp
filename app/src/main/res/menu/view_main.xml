@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="io.praveen.typenote.ViewActivity">
     <item
-        android:id="@+id/copy"
-        android:icon="@drawable/ic_content_copy_white_24dp"
-        android:title="@string/copy"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/edit"
         android:icon="@drawable/ic_mode_edit_white_24dp"
         android:title="@string/edit"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/copy"
+        android:icon="@drawable/ic_content_copy_white_24dp"
+        android:title="@string/copy"
         app:showAsAction="always" />
     <item
         android:id="@+id/share"

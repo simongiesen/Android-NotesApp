@@ -1,8 +1,5 @@
 package io.praveen.typenote.SQLite;
 
-/**
- * Created by srikarn on 26-02-2018.
- */
 import android.provider.BaseColumns;
 
 class DatabaseContract {
@@ -12,6 +9,7 @@ class DatabaseContract {
         static final String KEY_ID = "id";
         static final String KEY_NOTE = "note";
         static final String KEY_DATE = "date";
+        static final String KEY_STAR = "star";
     }
 
 }

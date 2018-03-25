@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="io.praveen.typenote.MainActivity">
+    <item
+        android:icon="@drawable/ic_turned_in_not_24"
+        android:id="@+id/menu_important"
+        android:title="@string/important"
+        app:showAsAction="ifRoom"/>
+</menu>

@@ -12,6 +12,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
@@ -19,9 +20,10 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ViewActivity extends AppCompatActivity {
 
-    TextView tv;
+    TextView tv, tv2, tv3;
     @Nullable
-    String noteText;
+    String noteText, date;
+    int imp;
     int id;
 
     @Override
@@ -30,6 +32,8 @@ public class ViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view);
         if (getIntent().getExtras() != null) {
             noteText = getIntent().getExtras().getString("note");
+            imp = getIntent().getExtras().getInt("imp");
+            date = getIntent().getExtras().getString("date");
         }
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
@@ -40,6 +44,12 @@ public class ViewActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         tv = findViewById(R.id.view_text);
+        tv2 = findViewById(R.id.view_date);
+        tv3 = findViewById(R.id.view_important);
+        if (imp == 1){
+            tv3.setVisibility(View.VISIBLE);
+        }
+        tv2.setText(date);
         id = getIntent().getExtras().getInt("id");
         tv.setText(noteText);
 
@@ -72,6 +82,7 @@ public class ViewActivity extends AppCompatActivity {
             Intent intent = new Intent(ViewActivity.this, EditActivity.class);
             intent.putExtra("note", noteText);
             intent.putExtra("id", id);
+            intent.putExtra("imp", imp);
             startActivity(intent);
         } else if (item.getItemId() == R.id.share) {
             Intent sendIntent = new Intent();

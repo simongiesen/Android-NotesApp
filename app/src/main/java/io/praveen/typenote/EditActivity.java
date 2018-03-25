@@ -9,9 +9,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,6 +30,17 @@ public class EditActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
     TextInputEditText text;
+    int imp = 0;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_main, menu);
+        imp = getIntent().getExtras().getInt("imp");
+        if (imp == 1){
+            menu.findItem(R.id.menu_important).setIcon(R.drawable.ic_turned_in_24);
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +74,7 @@ public class EditActivity extends AppCompatActivity {
                         id = getIntent().getExtras().getInt("id");
                     }
                     DatabaseHandler db = new DatabaseHandler(EditActivity.this);
-                    db.updateNote(new Note(id, note, formattedDate));
+                    db.updateNote(new Note(id, note, formattedDate, imp));
                     Intent intent = new Intent(EditActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("edit", true);
@@ -70,6 +85,22 @@ public class EditActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_important){
+            if (imp == 0){
+                imp = 1;
+                item.setIcon(R.drawable.ic_turned_in_24);
+            } else{
+                imp = 0;
+                item.setIcon(R.drawable.ic_turned_in_not_24);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

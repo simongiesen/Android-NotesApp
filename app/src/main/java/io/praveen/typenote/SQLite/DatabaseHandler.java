@@ -15,7 +15,7 @@ import static io.praveen.typenote.SQLite.DatabaseContract.DatabaseEntry.*;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "noteManager.db";
 
 
@@ -25,25 +25,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(@NonNull SQLiteDatabase db) {
-        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_NOTES + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NOTE + " TEXT," + KEY_DATE + " TEXT);";
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_NOTES + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NOTE + " TEXT," + KEY_DATE + " TEXT," + KEY_STAR + " INTEGER DEFAULT 0);";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
     @Override
     public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
-        onCreate(db);
+        if (oldVersion < newVersion){
+            db.execSQL("ALTER TABLE " + TABLE_NOTES + " ADD COLUMN " + KEY_STAR + " INTEGER DEFAULT 0");
+        } else{
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+        }
     }
 
     @NonNull
     public Note getNote(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        @SuppressLint("Recycle") Cursor cursor = db.query(TABLE_NOTES, new String[]{KEY_ID, KEY_NOTE, KEY_DATE}, KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        @SuppressLint("Recycle") Cursor cursor = db.query(TABLE_NOTES, new String[]{KEY_ID, KEY_NOTE, KEY_DATE, KEY_STAR}, KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
         assert cursor != null;
-        return new Note(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2));
+        return new Note(Integer.parseInt(cursor.getString(0)), cursor.getString(1), cursor.getString(2), cursor.getInt(3));
 
     }
 
@@ -59,6 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 note.setID(Integer.parseInt(cursor.getString(0)));
                 note.setNote(cursor.getString(1));
                 note.setDate(cursor.getString(2));
+                note.setStar(cursor.getInt(3));
                 noteList.add(note);
             } while (cursor.moveToNext());
         }
@@ -78,6 +82,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_NOTE, note.getNote());
         values.put(KEY_DATE, note.getDate());
+        values.put(KEY_STAR, note.getStar());
         db.update(TABLE_NOTES, values, KEY_ID + " = ?", new String[]{String.valueOf(note.getID())});
     }
 
@@ -92,6 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_NOTE, note.getNote());
         values.put(KEY_DATE, note.getDate());
+        values.put(KEY_STAR, note.getStar());
         db.insert(TABLE_NOTES, null, values);
         db.close();
     }
