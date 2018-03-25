@@ -52,7 +52,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @NonNull
     public List<Note> getAllNotes() {
-        List<Note> noteList = new ArrayList<Note>();
+        List<Note> noteList = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_NOTES;
         SQLiteDatabase db = this.getWritableDatabase();
         @SuppressLint("Recycle") Cursor cursor = db.rawQuery(selectQuery, null);

@@ -27,9 +27,23 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.MyViewHolder> 
         fullNote = notes;
     }
 
+    public int impPos(int position){
+        int pos = 0;
+        int j = -1;
+        for (Note i : fullNote) {
+            if (i.getStar() == 1) {
+                j++;
+                if (j == position) return pos;
+            }
+            pos++;
+        }
+        return pos;
+    }
+
     @NonNull
     @Override
     public Filter getFilter() {
+
         return new Filter() {
             @NonNull
             @Override

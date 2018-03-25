@@ -45,7 +45,7 @@ public class EditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note);
+        setContentView(R.layout.activity_edit);
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
         SpannableStringBuilder SS = new SpannableStringBuilder("Edit Note");
@@ -58,9 +58,10 @@ public class EditActivity extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             noteText = getIntent().getExtras().getString("note");
         }
-        fab = findViewById(R.id.add_fab);
-        text = findViewById(R.id.add_text);
+        fab = findViewById(R.id.edit_fab);
+        text = findViewById(R.id.edit_text);
         text.setText(noteText);
+        text.setSelection(noteText != null ? noteText.length() : 0);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(@NonNull View v) {

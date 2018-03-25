@@ -76,10 +76,6 @@ public class AboutActivity extends AppCompatActivity implements BillingProcessor
                 }
             }
 
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
         }));
     }
 

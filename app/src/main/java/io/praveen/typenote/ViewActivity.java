@@ -1,7 +1,9 @@
 package io.praveen.typenote;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.List;
+
+import io.praveen.typenote.SQLite.DatabaseHandler;
+import io.praveen.typenote.SQLite.Note;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -23,8 +29,7 @@ public class ViewActivity extends AppCompatActivity {
     TextView tv, tv2, tv3;
     @Nullable
     String noteText, date;
-    int imp;
-    int id;
+    int imp, position, id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,7 @@ public class ViewActivity extends AppCompatActivity {
             noteText = getIntent().getExtras().getString("note");
             imp = getIntent().getExtras().getInt("imp");
             date = getIntent().getExtras().getString("date");
+            position = getIntent().getExtras().getInt("pos");
         }
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder().setDefaultFontPath("fonts/whitney.ttf").setFontAttrId(R.attr.fontPath).build());
         Typeface font2 = Typeface.createFromAsset(getAssets(), "fonts/whitney.ttf");
@@ -92,6 +98,14 @@ public class ViewActivity extends AppCompatActivity {
             startActivity(sendIntent);
         } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+        } else if (item.getItemId() == R.id.delete) {
+            final DatabaseHandler db = new DatabaseHandler(this);
+            List<Note> l = db.getAllNotes();
+            final Note note = l.get(position);
+            db.deleteNote(note);
+            Intent i = new Intent(ViewActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
         }
         return true;
     }

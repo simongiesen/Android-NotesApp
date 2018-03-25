@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             StringBuilder writer = new StringBuilder();
             for(int i = 0; i < l.size(); i++){
-                writer.append(l.get(i).getNote()).append("\n").append(l.get(i).getDate()).append("\n\n=====================\n\n");
+                writer.append(l.get(i).getNote()).append("\n").append(l.get(i).getDate()).append("\n_________\n\n");
             }
             s = writer.toString();
         } catch (Exception ignored) {}
@@ -242,7 +242,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view, final int position) {
-                final Note note = l.get(position);
+                int pos = position;
+                if (imp == 1){
+                    pos = mAdapter.impPos(position);
+                }
+                final Note note = l.get(pos);
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("text", note.getNote());
                 if (clipboard != null) {
@@ -253,40 +257,11 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("id", note.getID());
                 intent.putExtra("imp", note.getStar());
                 intent.putExtra("date", note.getDate());
+                intent.putExtra("pos", pos);
                 startActivity(intent);
                 finish();
             }
 
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onLongClick(View view, final int position) {
-                final Note note = l.get(position);
-                new MaterialStyledDialog.Builder(MainActivity.this).setIcon(R.drawable.ic_delete)
-                        .setDescription("The note will be permanently deleted!")
-                        .setPositiveText("DISMISS")
-                        .setTitle("Delete note?")
-                        .setHeaderColor(R.color.colorRed)
-                        .withIconAnimation(false)
-                        .withDivider(true)
-                        .onPositive(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {}
-                        })
-                        .setNegativeText("DELETE")
-                        .onNegative(new MaterialDialog.SingleButtonCallback() {
-                            @Override
-                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                db.deleteNote(note);
-                                Snackbar.make(sv, "Note deleted!", Snackbar.LENGTH_SHORT).show();
-                                l.remove(position);
-                                recreate();
-                                if (l.isEmpty()) {
-                                    recyclerView.setVisibility(View.GONE);
-                                    rl.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        }).show();
-            }
         }));
     }
 
